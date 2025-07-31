@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pricing Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg: #0f1220;
+      --panel: #161a2f;
+      --panel-2: #1c2142;
+      --text: #e8ecff;
+      --muted: #a7b0d6;
+      --accent: #6ea8fe;
+      --accent-2: #72e1d1;
+      --warning: #ffd166;
+      --good: #7ee081;
+      --bad: #ff6b6b;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(114,225,209,.15), transparent 60%),
+                  radial-gradient(800px 500px at -10% 110%, rgba(110,168,254,.16), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+    .app{
+      width:min(1020px, 100%);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:22px;
+    }
+    @media (max-width: 920px){
+      .app{grid-template-columns: 1fr}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0)) , var(--panel);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    header.app-header{
+      grid-column: 1/-1;
+      padding: 22px 24px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      background: transparent;
+      border:none;
+      box-shadow:none;
+    }
+    .title{
+      display:flex; align-items:center; gap:14px;
+    }
+    .logo{
+      width:42px; height:42px; border-radius:12px;
+      background: conic-gradient(from 200deg, var(--accent), var(--accent-2), var(--accent), var(--accent-2));
+      position:relative;
+      box-shadow: inset 0 0 22px rgba(255,255,255,.25), 0 10px 24px rgba(0,0,0,.35);
+    }
+    .logo::after{
+      content:"";
+      position:absolute; inset:4px;
+      border-radius:9px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.5), transparent 40%), rgba(0,0,0,.25);
+      mix-blend-mode: screen;
+    }
+    h1{
+      margin:0;
+      font-size: 24px; letter-spacing:.2px;
+    }
+    .muted{color:var(--muted)}
+    .panel{
+      padding: 20px 22px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .inputs{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+    }
+    @media (max-width:560px){ .inputs{grid-template-columns: 1fr} }
+    .field{
+      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .field label{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .field input[type="number"]{
+      width:100%;
+      background: #0e1230;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 16px;
+      outline: none;
+      transition: border .2s, box-shadow .2s;
+    }
+    .field input[type="number"]:focus{
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110,168,254,.18);
+    }
+    .field .hint{
+      font-size: 12px; color: var(--muted); margin-top: 8px;
+    }
+    .row{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+    .inline{
+      display:flex; gap:8px; align-items:center;
+      color: var(--muted); font-size: 13px;
+    }
+    .chip{
+      background: rgba(114,225,209,.12);
+      border: 1px solid rgba(114,225,209,.4);
+      color: var(--accent-2);
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: .2px;
+      font-size: 12px;
+    }
+    .results{
+      display:grid; gap:12px;
+    }
+    .price{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+      padding: 10px 0 0;
+    }
+    .price .main{
+      font-size: 38px; font-weight: 800; letter-spacing: .3px;
+    }
+    .price .period{ color: var(--muted); margin-left: 6px; font-size: 14px; font-weight: 600;}
+    .breakdown{
+      display:grid; gap:8px;
+      background: rgba(255,255,255,.03);
+      border: 1px dashed rgba(255,255,255,.15);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .brow{
+      display:flex; justify-content:space-between; align-items:center;
+      color: var(--text);
+    }
+    .brow .label{ color: var(--muted); }
+    .brow .value{
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+    .brow.emph .value{ color: var(--good); font-weight: 700; }
+    .brow.warn .value{ color: var(--warning); }
+    .brow.neg .value{ color: var(--bad); }
+    .toggles{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .switch{
+      position: relative;
+      display: inline-flex; align-items:center; gap:10px;
+      cursor: pointer; user-select:none;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 8px 10px;
+      border-radius: 999px;
+      transition: background .2s, border .2s;
+    }
+    .switch input{ display:none; }
+    .switch .knob{
+      width: 38px; height: 22px; border-radius: 999px;
+      background: #0a0d1d;
+      border: 1px solid rgba(255,255,255,.12);
+      position: relative;
+      box-shadow: inset 0 0 10px rgba(0,0,0,.35);
+    }
+    .switch .dot{
+      position:absolute; top:2px; left:2px;
+      width:18px; height:18px; border-radius:50%;
+      background: linear-gradient(180deg, #e8f1ff, #b8c6ff);
+      transition: transform .2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    }
+    .switch input:checked + .knob .dot{
+      transform: translateX(16px);
+      background: linear-gradient(180deg, #bbffe9, #72e1d1);
+    }
+    .help{
+      color: var(--muted); font-size: 13px;
+    }
+    .footer{
+      grid-column: 1/-1;
+      text-align:center;
+      color: var(--muted);
+      font-size: 12px;
+      padding-top: 6px;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width:560px){ .kpi{grid-template-columns: 1fr 1fr} }
+    .kcard{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .kcard .klabel{ color: var(--muted); font-size: 12px; }
+    .kcard .kval{
+      font-size: 18px; font-weight: 700; letter-spacing:.2px;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+    .btn-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    button.copy{
+      appearance:none; border:none; cursor:pointer;
+      background: linear-gradient(180deg, rgba(110,168,254,.20), rgba(110,168,254,.08));
+      color: #133a77;
+      padding: 10px 14px; border-radius: 10px; font-weight: 800;
+      letter-spacing:.2px;
+      box-shadow: 0 8px 18px rgba(110,168,254,.22);
+    }
+    .note{
+      font-size: 12px; color: var(--muted);
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "tinycolor2": "https://cdn.jsdelivr.net/npm/tinycolor2@1.6.0/+esm"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="title">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Pricing Calculator</h1>
+          <div class="muted">Base includes 3,000 test executions/month and 5 named users</div>
+        </div>
+      </div>
+      <div class="chip">Live • Instant</div>
+    </header>
+
+    <section class="card">
+      <div class="panel">
+        <div class="inputs">
+          <div class="field">
+            <label>
+              <span>Number of named users</span>
+              <span class="inline"><span class="chip">5 included</span></span>
+            </label>
+            <input id="users" type="number" min="0" step="1" inputmode="numeric" aria-label="Number of named users" />
+            <div class="hint">Each additional user over 5 costs $1,000 per year.</div>
+          </div>
+
+          <div class="field">
+            <label>
+              <span>Monthly test executions</span>
+              <span class="inline"><span class="chip">3,000 included</span></span>
+            </label>
+            <input id="tests" type="number" min="0" step="1" inputmode="numeric" aria-label="Monthly test executions" />
+            <div class="hint">Each execution beyond 3,000 per month costs $1 per run.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="toggles">
+          <label class="switch">
+            <input id="lockBase" type="checkbox" checked />
+            <span class="knob"><span class="dot"></span></span>
+            <span class="help">Always include base plan ($36,000/yr)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="results">
+          <div class="price">
+            <div>
+              <span class="main" id="totalPrice">$36,000</span>
+              <span class="period">per year</span>
+            </div>
+            <div class="btn-row">
+              <button class="copy" id="copyBtn" title="Copy quote summary">Copy summary</button>
+            </div>
+          </div>
+
+          <div class="breakdown" id="breakdown">
+            <!-- dynamic rows -->
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="kpi">
+          <div class="kcard">
+            <div class="klabel">Included users</div>
+            <div class="kval" id="kIncludedUsers">5</div>
+          </div>
+          <div class="kcard">
+            <div class="klabel">Included executions / mo</div>
+            <div class="kval" id="kIncludedExec">3,000</div>
+          </div>
+          <div class="kcard">
+            <div class="klabel">Effective per-exec</div>
+            <div class="kval" id="kEffExec">$1.00</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="panel">
+        <h3 style="margin:0 0 10px 0;">How pricing works</h3>
+        <ol class="muted" style="margin:0; padding-left:18px; display:grid; gap:8px;">
+          <li>Base plan is $36,000 per year, includes 5 named users and 3,000 executions/month.</li>
+          <li>Additional users beyond 5 are $1,000 per user per year.</li>
+          <li>Executions beyond 3,000 per month are $1 per run, billed annually as 12 × monthly overage.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <div class="note">
+          Example: 6 users and 3,000 executions → $36,000 + $1,000 = $37,000 / year.
+        </div>
+      </div>
+    </aside>
+
+    <div class="footer">All values are estimates. Taxes and discounts not included.</div>
+  </div>
+
+  <script type="module">
+    import tinycolor from "tinycolor2";
+
+    const fmtMoney = (n) => {
+      const sign = n < 0 ? "-" : "";
+      const v = Math.abs(n);
+      return sign + v.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    };
+    const fmtMoneyPrecise = (n) =>
+      n.toLocaleString(undefined, { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Pricing constants
+    const BASE_USERS = 5;
+    const BASE_EXEC_PER_MONTH = 3000;
+    const BASE_PRICE_YEAR = 36000;
+    const ADDL_USER_PRICE_YEAR = 1000;
+    const OVERAGE_PER_EXEC = 1; // per run
+    const MONTHS = 12;
+
+    const $ = (s) => document.querySelector(s);
+    const usersInput = $("#users");
+    const testsInput = $("#tests");
+    const lockBase = $("#lockBase");
+    const totalPriceEl = $("#totalPrice");
+    const breakdownEl = $("#breakdown");
+    const copyBtn = $("#copyBtn");
+    const kIncludedUsers = $("#kIncludedUsers");
+    const kIncludedExec = $("#kIncludedExec");
+    const kEffExec = $("#kEffExec");
+
+    // Initialize defaults to base config
+    usersInput.value = BASE_USERS;
+    testsInput.value = BASE_EXEC_PER_MONTH;
+
+    function calc() {
+      const users = Math.max(0, Math.floor(Number(usersInput.value || 0)));
+      const testsPerMonth = Math.max(0, Math.floor(Number(testsInput.value || 0)));
+      const includeBase = lockBase.checked;
+
+      const addlUsers = Math.max(0, users - BASE_USERS);
+      const monthlyOverageExec = Math.max(0, testsPerMonth - BASE_EXEC_PER_MONTH);
+      const annualOverageExec = monthlyOverageExec * MONTHS;
+      const overageCostYear = annualOverageExec * OVERAGE_PER_EXEC;
+      const addlUserCostYear = addlUsers * ADDL_USER_PRICE_YEAR;
+      const baseCost = includeBase ? BASE_PRICE_YEAR : 0;
+
+      const total = baseCost + addlUserCostYear + overageCostYear;
+
+      // Update DOM
+      totalPriceEl.textContent = fmtMoney(total);
+
+      // Breakdown rows
+      breakdownEl.innerHTML = "";
+      const addRow = (label, value, cls="") => {
+        const row = document.createElement("div");
+        row.className = `brow ${cls}`;
+        const l = document.createElement("div");
+        l.className = "label";
+        l.textContent = label;
+        const v = document.createElement("div");
+        v.className = "value";
+        v.textContent = typeof value === "number" ? fmtMoney(value) : value;
+        row.append(l, v);
+        breakdownEl.append(row);
+      };
+
+      if (includeBase) addRow("Base plan", BASE_PRICE_YEAR, "emph");
+      addRow(`Additional users (${addlUsers} × ${fmtMoney(ADDL_USER_PRICE_YEAR)})`, addlUserCostYear, addlUsers ? "emph" : "");
+      addRow(`Monthly execution overage (${monthlyOverageExec.toLocaleString()} × ${fmtMoneyPrecise(OVERAGE_PER_EXEC)} × 12)`, overageCostYear, monthlyOverageExec ? "warn" : "");
+
+      // KPIs
+      kIncludedUsers.textContent = BASE_USERS.toLocaleString();
+      kIncludedExec.textContent = BASE_EXEC_PER_MONTH.toLocaleString();
+
+      const totalExecYear = Math.max(testsPerMonth, BASE_EXEC_PER_MONTH) * MONTHS;
+      const eff = total > 0 ? total / totalExecYear : 0;
+      kEffExec.textContent = fmtMoneyPrecise(eff);
+
+      // Decorative accent shift
+      const accent = tinycolor.mix("#6ea8fe", "#72e1d1", Math.min(100, Math.round((users + testsPerMonth/100) % 100)));
+      document.documentElement.style.setProperty("--accent", accent.toHexString());
+    }
+
+    function copySummary() {
+      const users = Math.max(0, Math.floor(Number(usersInput.value || 0)));
+      const testsPerMonth = Math.max(0, Math.floor(Number(testsInput.value || 0)));
+      const includeBase = lockBase.checked;
+      const addlUsers = Math.max(0, users - BASE_USERS);
+      const monthlyOverageExec = Math.max(0, testsPerMonth - BASE_EXEC_PER_MONTH);
+      const annualOverageExec = monthlyOverageExec * MONTHS;
+
+      const base = includeBase ? `Base: ${fmtMoney(BASE_PRICE_YEAR)}` : "Base: $0";
+      const usersRow = `Additional users (${addlUsers} × ${fmtMoney(ADDL_USER_PRICE_YEAR)}): ${fmtMoney(addlUsers * ADDL_USER_PRICE_YEAR)}`;
+      const overRow = `Execution overage (${monthlyOverageExec.toLocaleString()} × ${fmtMoneyPrecise(OVERAGE_PER_EXEC)} × 12 = ${annualOverageExec.toLocaleString()}): ${fmtMoney(annualOverageExec * OVERAGE_PER_EXEC)}`;
+      const total = totalPriceEl.textContent;
+
+      const text = [
+        "Quote Summary",
+        `Users: ${users}`,
+        `Monthly executions: ${testsPerMonth.toLocaleString()}`,
+        base,
+        usersRow,
+        overRow,
+        `Total (per year): ${total}`
+      ].join("\n");
+
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = "Copy summary"), 1200);
+      }).catch(() => {
+        // Fallback: prompt
+        const ok = prompt("Copy the summary:", text);
+        if (ok !== null) {
+          copyBtn.textContent = "Copied?";
+          setTimeout(() => (copyBtn.textContent = "Copy summary"), 1200);
+        }
+      });
+    }
+
+    // Wire events
+    ["input", "change"].forEach(evt => {
+      usersInput.addEventListener(evt, calc);
+      testsInput.addEventListener(evt, calc);
+      lockBase.addEventListener(evt, calc);
+    });
+    copyBtn.addEventListener("click", copySummary);
+
+    // Initial calc
+    calc();
+  </script>
+</body>
+</html>
