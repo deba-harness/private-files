@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            box-sizing: border-box;
+            background-color: white;
+        }
+        button { 
+            padding: 20px 40px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            border: 3px solid #333; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            background-color: white; 
+            color: #333; 
+            transition: all 0.3s ease;
+        }
+        button:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body>
+    <button onclick="toggleYellow(this)">Click for Yellow</button>
+    
+    <script>
+        function toggleYellow(btn) {
+            if (btn.style.backgroundColor === 'yellow') {
+                btn.style.backgroundColor = 'white';
+                btn.style.color = '#333';
+                btn.innerText = 'Click for Yellow';
+                document.body.style.backgroundColor = 'white';
+            } else {
+                btn.style.backgroundColor = 'yellow';
+                btn.style.color = '#333';
+                btn.innerText = 'YELLOW ACTIVE!';
+                document.body.style.backgroundColor = '#ffffcc';
+            }
+        }
+    </script>
+</body>
+</html>

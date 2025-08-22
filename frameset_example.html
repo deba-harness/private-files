@@ -1,98 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Frameset Alternative - 4 Colored Regions</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-        }
-        
-        .frame-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #333;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        
-        button {
-            padding: 20px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            border: 3px solid #333;
-            border-radius: 10px;
-            cursor: pointer;
-            background-color: white;
-            color: #333;
-            transition: all 0.3s ease;
-        }
-        
-        button:hover {
-            transform: scale(1.1);
-        }
-        
-        .red-active {
-            background-color: #ff6b6b !important;
-            color: white !important;
-        }
-        
-        .blue-active {
-            background-color: #4dabf7 !important;
-            color: white !important;
-        }
-        
-        .green-active {
-            background-color: #51cf66 !important;
-            color: white !important;
-        }
-        
-        .yellow-active {
-            background-color: #ffd43b !important;
-            color: #333 !important;
-        }
-    </style>
+    <title>Frameset with 4 Colored Regions</title>
 </head>
-<body>
-    <!-- Top Left - Red -->
-    <div class="frame-section">
-        <button id="redBtn" onclick="toggleColor('red')">Click for Red</button>
-    </div>
+<frameset rows="50%,50%" cols="50%,50%">
+    <!-- Top Left Frame - Red -->
+    <frame src="red.html" name="redFrame">
     
-    <!-- Top Right - Blue -->
-    <div class="frame-section">
-        <button id="blueBtn" onclick="toggleColor('blue')">Click for Blue</button>
-    </div>
+    <!-- Top Right Frame - Blue -->
+    <frame src="blue.html" name="blueFrame">
     
-    <!-- Bottom Left - Green -->
-    <div class="frame-section">
-        <button id="greenBtn" onclick="toggleColor('green')">Click for Green</button>
-    </div>
+    <!-- Bottom Left Frame - Green -->
+    <frame src="green.html" name="greenFrame">
     
-    <!-- Bottom Right - Yellow -->
-    <div class="frame-section">
-        <button id="yellowBtn" onclick="toggleColor('yellow')">Click for Yellow</button>
-    </div>
-
-    <script>
-        function toggleColor(color) {
-            const btn = document.getElementById(color + 'Btn');
-            const activeClass = color + '-active';
-            
-            if (btn.classList.contains(activeClass)) {
-                btn.classList.remove(activeClass);
-                btn.innerText = 'Click for ' + color.charAt(0).toUpperCase() + color.slice(1);
-            } else {
-                btn.classList.add(activeClass);
-                btn.innerText = color.toUpperCase() + ' ACTIVE!';
-            }
-        }
-    </script>
-</body>
+    <!-- Bottom Right Frame - Yellow -->
+    <frame src="yellow.html" name="yellowFrame">
+    
+    <noframes>
+        <body>
+            <h2>Your browser does not support frames!</h2>
+            <p>Framesets are deprecated in modern HTML. Please use a browser that supports frames or consider using iframes instead.</p>
+        </body>
+    </noframes>
+</frameset>
 </html>
